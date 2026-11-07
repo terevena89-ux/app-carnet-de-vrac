@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Icône de l'appli etC. : une page de carnet à lignes, écrite à l'encre bleue,
+       sur fond papier. Le tampon rond en bas à droite = ma signature (commune à mes applis). -->
+  <rect width="100" height="100" rx="22" fill="#f3f1ea"/>
+  <!-- la page, légèrement penchée -->
+  <g transform="rotate(-6 46 48)">
+    <rect x="22" y="16" width="48" height="62" rx="4" fill="#fff" stroke="#1d1f24" stroke-width="4"/>
+    <path d="M31 32h30M31 43h30M31 54h20" stroke="#2f5bd3" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+  <circle cx="78" cy="78" r="13" fill="#111"/>
+  <circle cx="78" cy="78" r="9" fill="none" stroke="#FAC775" stroke-width="2" stroke-dasharray="3 2"/>
+  <circle cx="78" cy="78" r="3" fill="#FAC775"/>
+</svg>
