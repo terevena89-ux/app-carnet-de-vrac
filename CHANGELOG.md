@@ -1,5 +1,10 @@
 # etC. — journal des nouveautés
 
+## 0.1.1 — 2026-11-09
+- Réglages › Notes : bloc-notes libre pour noter mes idées d'amélioration, synchronisé entre le téléphone et le PC, avec un bouton Copier.
+- Correctif : plus de barre de remplissage automatique (clé / carte / adresse) au-dessus du clavier dans les cases de saisie.
+- Sur téléphone, les listes déroulantes s'ouvrent dans un petit panneau en bas (coche sur le choix actuel, case « Chercher… » au-delà de 10 choix). Sur PC, rien ne change.
+
 ## 0.1.0 — 2026-11-07
 Première version, reprise de l'ancien « Carnet de vrac » (artefact claude.ai, gardé dans `archive/`).
 - **Notes** : ajout en une ligne (`#catégorie` pour ranger, lien collé = lien de la note), filtres par catégorie, favoris, archives, recherche. Toucher une note ouvre sa fiche : Chercher sur Google, épingler, favori, archiver.

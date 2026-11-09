@@ -183,3 +183,7 @@ select.champ { appearance: none; }
   #impression li { margin-bottom: 4pt; }
   body { background: #fff; }
 }
+
+/* Petit panneau des listes déroulantes sur téléphone (module champs-mobile.js) :
+   il reprend les couleurs de l'appli, et suit donc le thème clair / sombre. */
+.pm-voile, .ni-ecran { --pm-fond: var(--carte); --pm-texte: var(--encre); --pm-discret: var(--discret); --pm-trait: var(--fin); --pm-accent: var(--acc); --pm-champ: var(--fond); --pm-appui: var(--tag); }

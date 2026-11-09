@@ -24,7 +24,7 @@ import { chargerExcelJS, ajouterFeuille, telechargerClasseur, lireClasseur, lire
 
 /* ---------- 1. Réglages de base et état ---------- */
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 const NOM_APPLI = "app-carnet-de-vrac"; // dossier dans Firestore et nom des fichiers Excel
 const TRI = "À trier";                  // catégorie par défaut, toujours présente
 
@@ -32,6 +32,7 @@ const TRI = "À trier";                  // catégorie par défaut, toujours pr�
 const S = {
   notes: [], decs: [],
   cats: [TRI], lastRecapAt: "", lastAnkiAt: "",   // synchronisés (document « donnees »)
+  idees: "",             // Réglages › Notes : idées d'amélioration (synchronisées, même document)
   onglet: "notes", modif: false, recherche: false, q: "",
   filtre: "Tout",        // Tout, une catégorie, "__fav" (favoris) ou "__arch" (archives)
   filtreDec: "cours",    // cours (en cours) ou arch (archivées = tranchées)
@@ -87,6 +88,12 @@ function effacer(nom, id) {
   if (MODE_DEMO) return sauverDemo();
   deleteDoc(doc(coll(nom), id)).catch(erreurEcriture);
 }
+// Réglages › Notes (bloc-notes d'idées) : seulement le champ « idees », sans toucher au reste.
+function sauverIdees(texte) {
+  S.idees = texte;
+  if (MODE_DEMO) return sauverDemo();
+  setDoc(refDonnees(), { idees: texte }, { merge: true }).catch(erreurEcriture);
+}
 function sauverMeta() {
   if (MODE_DEMO) return sauverDemo();
   setDoc(refDonnees(), { cats: S.cats, lastRecapAt: S.lastRecapAt, lastAnkiAt: S.lastAnkiAt }, { merge: true }).catch(erreurEcriture);
@@ -94,7 +101,7 @@ function sauverMeta() {
 
 // Mode démo : tout est recopié dans le navigateur après chaque modification
 function sauverDemo() {
-  const d = { notes: S.notes, decs: S.decs, cats: S.cats, lastRecapAt: S.lastRecapAt, lastAnkiAt: S.lastAnkiAt };
+  const d = { notes: S.notes, decs: S.decs, cats: S.cats, lastRecapAt: S.lastRecapAt, lastAnkiAt: S.lastAnkiAt, idees: S.idees };
   try { localStorage.setItem("etc-demo", JSON.stringify(d)); } catch (e) { /* stockage plein ou bloqué */ }
 }
 function demarrerDemo() {
@@ -102,6 +109,7 @@ function demarrerDemo() {
   try { d = JSON.parse(localStorage.getItem("etc-demo")) || {}; } catch (e) { /* rien de gardé */ }
   S.notes = d.notes || []; S.decs = d.decs || [];
   S.cats = avecTri(d.cats); S.lastRecapAt = d.lastRecapAt || ""; S.lastAnkiAt = d.lastAnkiAt || "";
+  S.idees = d.idees || "";
   uid = "demo"; S.compte = "Mode démo (données sur cet appareil seulement)";
   demarrerAffichage();
 }
@@ -149,6 +157,7 @@ function ecouter() {
     majSynchro("donnees", snap.metadata);
     const d = snap.exists() ? snap.data() : {};
     S.cats = avecTri(d.cats); S.lastRecapAt = d.lastRecapAt || ""; S.lastAnkiAt = d.lastAnkiAt || "";
+    S.idees = d.idees || ""; NotesIdees.maj(S.idees); // un autre appareil a pu changer les notes
     rerendre();
     premier("donnees");
   }, err => console.error(err)));
@@ -555,6 +564,7 @@ function ouvrirReglages() {
       <button class="f ${anim === "simples" ? "on" : ""}" data-act="anim" data-v="simples">Simples</button></span></div>
     <div class="lbl">Contenu</div>
     <button class="rangee" data-act="cats"><span>Catégories</span><span class="meta">Voir… ›</span></button>
+    <button class="rangee" data-act="idees"><span>Notes</span><span class="meta">›</span></button>
     <div class="lbl">Anki</div>
     <div class="duo"><button class="btn" data-act="anki" data-v="nouvelles">Nouvelles cartes${nouvellesCartes ? " (" + nouvellesCartes + ")" : ""}</button>
       <button class="btn" data-act="anki" data-v="toutes">Toutes</button></div>
@@ -759,6 +769,7 @@ document.addEventListener("click", e => {
     case "pdf": imprimerRecap(); break;
     // réglages
     case "themes": ouvrirThemes(); break;
+    case "idees": NotesIdees.ouvrir(S.idees, sauverIdees); break;
     case "theme": sauverReglageLocal("theme", v); window.appliquerTheme(v); ouvrirThemes(); break;
     case "anim": sauverReglageLocal("anim", v); document.documentElement.classList.toggle("anim-simples", v === "simples"); ouvrirReglages(); break;
     case "cats": ouvrirCats(); break;
